@@ -8,8 +8,7 @@
         "php": ">=5.6.4",
         "laravel/framework": "5.3.*",
         "barryvdh/laravel-cors": "^0.8.2",
-        "tymon/jwt-auth": "0.5.*",
-        "predis/predis": "^1.1"
+        "tymon/jwt-auth": "0.5.*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -29,7 +28,8 @@
     "autoload-dev": {
         "classmap": [
             "tests/Support/",
-            "tests/TestCase.php"
+            "tests/TestCase.php",
+            "tests/ApiTestCase.php"
         ]
     },
     "scripts": {
@@ -46,7 +46,8 @@
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
             "php artisan optimize"
-        ]
+        ],
+        "test": "phpunit"
     },
     "config": {
         "preferred-install": "dist"

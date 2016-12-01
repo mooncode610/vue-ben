@@ -1,8 +1,10 @@
 <?php
 
+use Illuminate\Http\Request;
+
 Route::group(['middleware' => ['cors', 'api']], function () {
     Route::post('login', ['uses' => 'LoginController@login']);
-    Route::group(['middleware' => 'auth:api'], function () {
+    Route::group(['middleware' => 'jwt.auth'], function () {
         Route::group(['prefix' => 'categories'], function () {
             Route::get('', ['uses' => 'CategoriesController@all']);
             Route::get('{id}/get', ['uses' => 'CategoriesController@get']);

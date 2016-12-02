@@ -16,7 +16,7 @@ class CategoriesControllerTest extends ApiTestCase
     {
         $this->create(Category::class);
 
-        $this->json('DELETE', '/api/categories/1');
+        $this->json('DELETE', '/api/categories/1/remove');
 
         $this->assertResponseOk();
         $this->dontSeeInDatabase('categories', ['id' => 1]);
@@ -29,7 +29,7 @@ class CategoriesControllerTest extends ApiTestCase
     {
         $this->create(Category::class);
 
-        $this->json('PUT', '/api/categories/1', [
+        $this->json('PUT', '/api/categories/1/update', [
             'name' => 'Dummy',
         ]);
 
@@ -64,9 +64,9 @@ class CategoriesControllerTest extends ApiTestCase
     public function urlProvider()
     {
         return [
-            ['GET', '/api/categories/1'],
-            ['PUT', '/api/categories/1'],
-            ['DELETE', '/api/categories/1'],
+            ['GET', '/api/categories/1/get'],
+            ['PUT', '/api/categories/1/update'],
+            ['DELETE', '/api/categories/1/remove'],
         ];
     }
 
@@ -79,7 +79,7 @@ class CategoriesControllerTest extends ApiTestCase
             'name' => 'Dummy',
         ]);
 
-        $this->json('GET', '/api/categories/1');
+        $this->json('GET', '/api/categories/1/get');
 
         $this->assertResponseOk();
         
@@ -99,7 +99,7 @@ class CategoriesControllerTest extends ApiTestCase
      */
     public function can_create_category()
     {
-        $this->json('POST', '/api/categories', [
+        $this->json('POST', '/api/categories/create', [
             'name' => 'Dummy name',
         ]);
 

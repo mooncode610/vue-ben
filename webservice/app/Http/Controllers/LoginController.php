@@ -2,30 +2,99 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Auth;
-use JWTException;
+use Lang;
 
 class LoginController extends Controller
 {
+    use ThrottlesLogins;
+
+    /**
+     * Issue a JWT token when valid login credentials are
+     * presented.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function login(Request $request)
     {
-        // grab credentials from the request
+        // Determine if the user has too many failed login attempts.
+        if ($this->hasTooManyLoginAttempts($request)) {
+
+            // Fire an event when a lockout occurs.
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
+
+        // Grab credentials from the request.
         $credentials = $request->only('email', 'password');
 
-        try {
-            // attempt to verify the credentials and create a token for the user
-            if (!$token = Auth::guard('api')->attempt($credentials)) {
-                return response()->json(['messages' => ['E-mail ou senha não conferem']], 401);
-            }
-        } catch (JWTException $e) {
-            // something went wrong whilst attempting to encode the token
-            return response()->json(['messages' => ['Não foi possível gerar o token']], 500);
+        // Attempt to verify the credentials and create a token for the user.
+        if ($token = Auth::guard('api')->attempt($credentials)) {
+
+            // All good so return the json with token and user.
+            return $this->sendLoginResponse($request, $token);
         }
+
+        // Increments login attempts.
+        $this->incrementLoginAttempts($request);
+
+        return $this->sendFailedLoginResponse($request);
+    }
+
+    /**
+     * Return the token and current user authenticated.
+     *
+     * @param Request $request
+     * @param $token
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function sendLoginResponse(Request $request, $token)
+    {
+        // Clear the login locks for the given user credentials.
+        $this->clearLoginAttempts($request);
 
         $user = Auth::guard('api')->user();
 
-        // all good so return the token
         return response()->json(compact('token', 'user'));
+    }
+
+    /**
+     * Return error message after determining invalid credentials.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function sendFailedLoginResponse(Request $request)
+    {
+        $message = Lang::get('auth.failed');
+
+        return response()->json(['messages' => [$message]], 401);
+    }
+
+    /**
+     * Redirect the user after determining they are locked out.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendLockoutResponse(Request $request)
+    {
+        $seconds = $this->limiter()->availableIn(
+            $this->throttleKey($request)
+        );
+
+        $message = Lang::get('auth.throttle', ['seconds' => $seconds]);
+
+        return response()->json(['messages' => [$message]], Response::HTTP_TOO_MANY_REQUESTS);
+    }
+
+    public function username()
+    {
+        return 'email';
     }
 }

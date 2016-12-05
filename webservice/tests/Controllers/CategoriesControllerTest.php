@@ -84,7 +84,7 @@ class CategoriesControllerTest extends ApiTestCase
         $this->assertResponseOk();
         
         $this->seeJsonStructure([
-            'data' => [
+            'result', 'category' => [
                 'id', 'name',   
             ],
         ]); 
@@ -120,11 +120,10 @@ class CategoriesControllerTest extends ApiTestCase
 
         $this->assertResponseOk();
         $this->seeJsonStructure([
-            'data' => [
-                '*' => ['id', 'name'],
-            ],
-            'meta' => [
-                'pagination' => [],
+            'pager' => [
+                'data' => [
+                    '*' => ['id', 'name'],
+                ],
             ],
         ]);
     }

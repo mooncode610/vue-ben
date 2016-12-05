@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Transformers\Transform;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Contracts\Routing\ResponseFactory;
 
@@ -13,32 +12,24 @@ abstract class ApiController extends Controller
      *
      * @var \Illuminate\Contracts\Routing\ResponseFactory
      */
-    private $response;
+    protected $response;
 
     /**
      * HTTP status code.
      *
      * @var int
      */
-    protected $statusCode = Response::HTTP_OK;
+    protected $statusCode = 200;
 
-    /**
-     * Transform.
-     *
-     * @var \App\Transformers\Transform
-     */
-    protected $transform;
 
     /**
      * Creates a new class instance.
      *
-     * @param ResponseFactory $response
-     * @param Transform       $transform
+     * @param \Illuminate\Contracts\Routing\ResponseFactory $response
      */
-    public function __construct(ResponseFactory $response, Transform $transform)
+    public function __construct(ResponseFactory $response)
     {
         $this->response = $response;
-        $this->transform = $transform;
     }
 
     /**
@@ -87,6 +78,19 @@ abstract class ApiController extends Controller
     protected function responseWithNotFound($message = 'Not Found')
     {
         return $this->setStatusCode(Response::HTTP_NOT_FOUND)->responseWithError($message);
+    }
+
+    /**
+     * Return a 204 response.
+     *
+     * @param  string $message
+     *
+     * @return \Illuminate\Http\Response
+     */
+    protected function responseWithNoContent()
+    {
+        return $this->setStatusCode(Response::HTTP_NO_CONTENT)
+                    ->response([]);
     }
 
     /**

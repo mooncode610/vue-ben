@@ -12,7 +12,7 @@ const http = axios.create({
 * Helper method to set the header with the token
 */
 export function setToken(token) {
-  http.defaults.headers.common.Authorization = `Bearer: ${token}`
+  http.defaults.headers.common.Authorization = `Bearer ${token}`
 }
 
 http.interceptors.response.use(
@@ -29,7 +29,7 @@ http.interceptors.response.use(
     * messages can be changed on app/Providers/EventServiceProvider.php
     */
     if (error.response.status === 401) {
-      router.push({ name: 'auth.singin' })
+      router.push({ name: 'login.index' })
     }
     /**
     * Error messages are sent in arrays

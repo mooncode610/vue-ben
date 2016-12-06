@@ -45,7 +45,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($request->expectsJson()) {
+        if ($request->expectsJson() && $exception instanceof HttpException) {
             return $this->handleExceptionJsonResponse($exception);
         }
 
@@ -61,15 +61,9 @@ class Handler extends ExceptionHandler
      */
     protected function handleExceptionJsonResponse(Exception $exception)
     {
-        $statusCode = ($exception instanceof HttpException ? $exception->getStatusCode() : 500);
-
-        $data = ['messages' => [$exception->getMessage()]];
-
-        if (config('app.debug')) {
-            $data['trace'] = $exception->getTrace();
-        }
-
-        return response()->json($data, $statusCode);
+        return response()->json([
+            'messages' => [$exception->getMessage()],
+        ], $exception->getStatusCode());
     }
 
     /**

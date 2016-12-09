@@ -1,28 +1,27 @@
 
 <script>
-  import { mapActions, mapGetters } from 'vuex'
-  import { version } from '../../config'
+  import { mapActions, mapState } from 'vuex'
   import CcSpinner from '../general/spinner'
+  import { version } from '../../config'
 
   export default {
     components: {
       CcSpinner,
     },
     computed: {
-      ...mapGetters(['currentUser', 'isLogged']),
+      ...mapState(['user']),
       version() {
         return version
       },
     },
-    watch: {
-      isLogged(value) {
-        if (value === false) {
-          this.$router.push({ name: 'auth.singin' })
-        }
-      },
-    },
     methods: {
-      ...mapActions(['logout']),
+      ...mapActions(['setToken', 'setUser']),
+      logout() {
+        this.$http.post('auth/token/revoke')
+        this.setToken('')
+        this.setUser({})
+        this.$router.push({ name: 'login.index' })
+      },
     },
   }
 </script>
@@ -51,7 +50,7 @@
           </ul>
           <div class="nav navbar-form navbar-right">
             <cc-spinner></cc-spinner>
-            <span class="username">{{ currentUser.name }}</span>
+            <span class="username">{{ user.name }}</span>
             <button class="btn btn-default btn-sm" @click="logout">Logout</button>
           </div>
         </div>

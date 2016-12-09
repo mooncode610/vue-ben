@@ -19,10 +19,8 @@ const actions = {
   },
 }
 
-const module = {
+export default {
   state,
   mutations,
   actions,
 }
-
-export default { module }

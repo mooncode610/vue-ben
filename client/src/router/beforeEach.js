@@ -1,8 +1,7 @@
 import store from '../store'
-import { isEmpty } from 'lodash'
 import { localStorageGetItem } from '../utils/local'
 
-const needAuth = (auth, token) => auth !== undefined && auth && isEmpty(token)
+const needAuth = (auth, token) => auth !== undefined && auth && token === ''
 
 const beforeEach = (to, from, next) => {
   /**
@@ -11,13 +10,14 @@ const beforeEach = (to, from, next) => {
   */
   store.dispatch('resetMessages')
 
-  let token = store.state.Auth.token
+  let token = store.state.token
   const auth = to.meta.requiresAuth
+
   /**
   * If there's no token stored in the state
   * then check localStorage:
   */
-  if (isEmpty(token)) {
+  if (token === '') {
     const localStoredToken = localStorageGetItem('token')
     const localStoredUser = localStorageGetItem('user')
 
@@ -51,7 +51,7 @@ const beforeEach = (to, from, next) => {
   * login.
   */
   if (needAuth(auth, token)) {
-    next({ name: 'auth.singin' })
+    next({ name: 'login.index' })
   }
 }
 

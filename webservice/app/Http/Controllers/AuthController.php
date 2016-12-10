@@ -57,15 +57,13 @@ class AuthController extends ApiController
 
         $user = Auth::guard('api')->user();
 
-        $token_ttl = $this->getTokenTTL($token);
-
-        return $this->response(compact('token', 'token_ttl', 'user'));
+        return $this->response(compact('token', 'user'));
     }
 
     /**
      * Return error message after determining invalid credentials.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     protected function sendFailedLoginResponse(Request $request)
@@ -78,7 +76,7 @@ class AuthController extends ApiController
     /**
      * Redirect the user after determining they are locked out.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function sendLockoutResponse(Request $request)
@@ -115,37 +113,6 @@ class AuthController extends ApiController
         $token = Auth::guard('api')->refresh();
 
         return $this->response(compact('token'));
-    }
-
-    /**
-     * Returns time to live of the jwt token.
-     * @param $token
-     * @return int
-     */
-    private function getTokenTTL($token)
-    {
-        $payload = $this->getPayloadToken($token);
-
-        return isset($payload['exp']) ? $payload['exp'] : 0;
-    }
-
-    /**
-     * Returns an array with payload of the jwt token.
-     * @param $token
-     * @return array
-     */
-    private function getPayloadToken($token)
-    {
-        $arrayPayload = [];
-
-        $parts = explode('.', $token);
-
-        if (count($parts) && isset($parts[1])) {
-            $json = base64_decode($parts[1]);
-            $arrayPayload = json_decode($json, true);
-        }
-
-        return $arrayPayload;
     }
 
     public function username()

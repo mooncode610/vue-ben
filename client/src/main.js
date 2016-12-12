@@ -15,7 +15,7 @@ import router from './router'
 /**
 * $http plugin based on axios
 */
-import httpPlugin from './plugins/http'
+import http from './plugins/http'
 
 /**
 * eventbus plugin
@@ -29,9 +29,8 @@ require('./includes')
 
 /**
 * Make $http avaible to all components
-* Send store and router to httpPlugin (injection)
 */
-Vue.use(httpPlugin, { store, router })
+Vue.use(http)
 
 /**
 * Make $bus avaible to all components

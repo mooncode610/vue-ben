@@ -4,7 +4,6 @@ import state from './state'
 import mutations from './mutations'
 import actions from './actions'
 import modules from './modules'
-import plugins from './plugins'
 
 Vue.use(Vuex)
 
@@ -13,6 +12,5 @@ export default new Vuex.Store({
   mutations,
   actions,
   modules,
-  plugins,
   strict: process.env.NODE_ENV !== 'production',
 })

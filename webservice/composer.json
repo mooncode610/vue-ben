@@ -1,6 +1,6 @@
 {
-    "name": "Codecast's Single Page Application Starter Kit",
-    "description": "This is the web service to support the kit.",
+    "name": "laravel/laravel",
+    "description": "The Laravel Framework.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",

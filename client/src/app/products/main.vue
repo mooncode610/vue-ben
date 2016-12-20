@@ -20,8 +20,7 @@
     },
 
     methods: {
-      edit(index) {
-        const { id } = this.products[index]
+      edit(id) {
         this.$router.push({
           name: 'products.edit',
           params: { id },
@@ -99,8 +98,7 @@
       /**
       * Shows a confirmation dialog
       */
-      askRemove(index) {
-        const product = this.products[index]
+      askRemove(product) {
         swal({
           title: 'Are you sure?',
           text: `Product ${product.name} will be permanently removed.`,
@@ -218,18 +216,22 @@
       </div>
       <div class="col-md-6 text-right">
         <div class="button-within-header">
-          <el-button
-            @click="create"
+          <a href="#"
             v-show="!isFormVisible"
-            type="default"
-            icon="plus"
-            size="mini"></el-button>
-          <el-button
-            @click="hide"
+            @click.prevent="create"
+            class="btn btn-xs btn-default"
+            data-toggle="tooltip" data-placement="top"
+            title="New Product">
+            <i class="fa fa-fw fa-plus"></i>
+          </a>
+          <a href="#"
             v-show="isFormVisible"
-            type="default"
-            icon="minus"
-            size="mini"></el-button>
+            @click.prevent="hide"
+            class="btn btn-xs btn-default"
+            data-toggle="tooltip" data-placement="top"
+            title="New Product">
+            <i class="fa fa-fw fa-minus"></i>
+          </a>
         </div>
       </div>
     </div>
@@ -241,18 +243,38 @@
       <router-view></router-view>
     </transition>
 
-    <!-- el-table and its children comes from Element UI -->
-    <!-- http://element.eleme.io/#/en-US/component/table -->
-    <el-table :data="products" stripe border style="width: 100%">
-      <el-table-column prop="id" label="ID" width="80"></el-table-column>
-      <el-table-column prop="name" label="Product"></el-table-column>
-      <el-table-column inline-template label="Options" width="100">
-        <div>
-          <el-button @click="edit($index)" type="default" icon="edit" size="mini"></el-button>
-          <el-button @click="askRemove($index)" type="default" icon="delete" size="mini"></el-button>
-        </div>
-      </el-table-column>
-    </el-table>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th colspan="2">Product</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="product in products">
+          <td width="1%" nowrap>{{ product.id }}</td>
+          <td>{{ product.name }}</td>
+          <td width="1%" nowrap="nowrap">
+            <a href="#"
+              @click.prevent="edit(product.id)"
+              class="btn btn-xs btn-default"
+              data-toggle="tooltip"
+              data-placement="top"
+              title="Edit">
+              <i class="fa fa-fw fa-pencil"></i>
+            </a>
+            <a href="#"
+              @click="askRemove(product)"
+              class="btn btn-xs btn-default"
+              data-toggle="tooltip"
+              data-placement="top"
+              title="Remove">
+              <i class="fa fa-fw fa-times"></i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
     <div>
       <cc-pagination
         :pagination-data="pagination"

@@ -2,37 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Support\Response;
+use App\Traits\Responses;
 use Illuminate\Http\Request;
 use App\Traits\QueryParameters;
+use App\Transformers\Transform;
+use Illuminate\Contracts\Routing\ResponseFactory;
 
 abstract class ApiController extends Controller
 {
-    use QueryParameters;
+    use Responses, QueryParameters;
 
     /**
-     * HTTP Request.
+     * Transform.
      *
-     * @var \Illuminate\Http\Request
+     * @var \App\Transformers\Transform
      */
-    protected $request;
-
-    /**
-     * API Response helper.
-     *
-     * @var \App\Support\Response
-     */
-    protected $response;
+    protected $transform;
 
     /**
      * Creates a new class instance.
      *
-     * @param Request   $request
-     * @param Response  $response
+     * @param Request         $request
+     * @param ResponseFactory $response
+     * @param Transform       $transform
      */
-    public function __construct(Request $request, Response $response)
+    public function __construct(Request $request, ResponseFactory $response, Transform $transform)
     {
         $this->request = $request;
         $this->response = $response;
+        $this->transform = $transform;
     }
 }

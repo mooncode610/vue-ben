@@ -49,11 +49,11 @@ class ParametersTest extends TestCase
     }
 
     /**
-     * Get a fresh instance of QueryParameter class.
+     * Get a fresh instance of the query parameters class.
      *
      * @param  array  $parameters
      *
-     * @return \App\Support\QueryParameter
+     * @return \App\Support\Parameters
      */
     private function getQueryParameterInstance($parameters = [])
     {

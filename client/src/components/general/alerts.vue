@@ -1,6 +1,7 @@
 
 <script>
   import { mapState, mapActions } from 'vuex'
+  import { isEmpty } from 'lodash'
 
   export default {
     computed: {
@@ -12,13 +13,7 @@
         return this.messages.error.length > 0
       },
       hasValidationMessages() {
-        return this.messages.validation.length > 0
-      },
-      formatedErrorMessage() {
-        return this.messages.error.map(msg => `&bull; ${msg}`).join('<br>')
-      },
-      formatedValidationMessage() {
-        return this.messages.validation.map(msg => `&bull; ${msg}`).join('<br>')
+        return !isEmpty(this.messages.validation)
       },
     },
     methods: {
@@ -39,33 +34,35 @@
 </script>
 
 <template>
-  <div class="alerts-container">
-    <el-alert
-      :title="messages.success"
-      v-show="hasSuccessMessage"
-      type="success"
-      @close="dismiss('success')"
-      show-icon></el-alert>
+  <div>
 
-    <el-alert
-      :title="formatedErrorMessage"
-      v-show="hasErrorMessages"
-      type="error"
-      @close="dismiss('error')"
-      show-icon></el-alert>
+    <!-- Success messages -->
+    <div class="alert alert-success" v-show="hasSuccessMessage">
+      <button type="button" class="close" aria-label="Close" @click="dismiss('success')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{ messages.success }}
+    </div>
 
-    <el-alert
-      :title="formatedErrorMessage"
-      v-show="hasValidationMessage"
-      type="warning"
-      @close="dismiss('validation')"
-      show-icon></el-alert>
+    <!-- Error messages -->
+    <div class="alert alert-danger" v-show="hasErrorMessages">
+      <button type="button" class="close" aria-label="Close" @click="dismiss('error')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <ul>
+        <li v-for="error in messages.error">{{ error }}</li>
+      </ul>
+    </div>
+
+    <!-- Validation messages -->
+    <div class="alert alert-danger" v-show="hasValidationMessages">
+      <button type="button" class="close" aria-label="Close" @click="dismiss('validation')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <ul>
+        <li v-for="error in messages.validation">{{ error[0] }}</li>
+      </ul>
+    </div>
 
   </div>
 </template>
-
-<style scoped>
-  .alerts-container {
-    padding-top: 16px;
-  }
-</style>

@@ -1,10 +1,11 @@
 import { isFunction } from 'lodash'
+import { vuex as Newpage } from './newpage'
 import { vuex as Categories } from './categories'
 import { vuex as Products } from './products'
 import { vuex as Auth } from './auth'
 
 // start extraction data from vuex modules
-const vuex = { Categories, Products, Auth };
+const vuex = {Newpage, Categories, Products, Auth };
 const keys = Object.keys(vuex)
 // process and extract data (modules and plugins)
 /**
